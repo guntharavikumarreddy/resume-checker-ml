@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+static/uploads/*
+!static/uploads/.gitkeep
+models/*.pkl
+.flaskenv
+.pytest_cache/
+.vscode/
+.idea/
+*.pdf
+*.docx

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Screener | Production Ready</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="glass-card">
+            <h1>Resume AI Screener</h1>
+            <p class="subtitle">Upload high-quality resumes for precise category prediction and JD matching.</p>
+            
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for message in messages %}
+                  <div style="color: #f87171; text-align: center; margin-bottom: 2rem;">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form action="/predict" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="job_description">Job Description (Optional)</label>
+                    <textarea name="job_description" id="job_description" placeholder="Paste the job requirements here to calculate a matching score..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Resume (PDF only)</label>
+                    <div class="file-upload">
+                        <img src="https://img.icons8.com/fluency/48/000000/upload.png" alt="upload" style="margin-bottom: 1rem;">
+                        <p>Click or drag your resume PDF here</p>
+                        <input type="file" name="resume" accept=".pdf" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">Analyze Resume</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.querySelector('input[type="file"]');
+        const uploadArea = document.querySelector('.file-upload');
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                uploadArea.querySelector('p').innerText = fileInput.files[0].name;
+                uploadArea.style.borderColor = "#6366f1";
+            }
+        });
+    </script>
+</body>
+</html>

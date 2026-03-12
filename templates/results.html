@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results | AI Resume Screener</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="glass-card">
+            <div class="result-header">
+                <h2>Analysis for: {{ filename }}</h2>
+                <a href="/" style="color: var(--primary); text-decoration: none; font-weight: 600;">← New Upload</a>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center;">
+                <div>
+                    <label>Predicted Category</label>
+                    <div class="prediction-badge">{{ prediction }}</div>
+                    
+                    <div style="margin-top: 2rem;">
+                        <label>Extracted Skills</label>
+                        <div class="skills-container">
+                            {% for skill in skills %}
+                                <span class="skill-tag">{{ skill }}</span>
+                            {% endfor %}
+                            {% if not skills %}
+                                <span class="text-muted">No specific skills detected.</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="score-circle">
+                        <span class="score-value">{{ match_score }}%</span>
+                        <span class="score-label">JD Match</span>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <span class="status-badge {% if status == 'Selected' %}status-selected{% elif status == 'Not Selected' %}status-rejected{% else %}status-na{% endif %}">
+                            {{ status }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container" id="skillsChart">
+                <!-- Plotly chart will be rendered here -->
+            </div>
+            
+            <script>
+                // Generate a simple chart if skills exist
+                const skills = {{ skills|tojson }};
+                if (skills.length > 0) {
+                    const data = [{
+                        x: skills,
+                        y: skills.map(() => 1),
+                        type: 'bar',
+                        marker: {
+                            color: 'rgba(99, 102, 241, 0.6)',
+                            line: {
+                                color: 'rgba(99, 102, 241, 1)',
+                                width: 1
+                            }
+                        }
+                    }];
+
+                    const layout = {
+                        title: 'Skill Set Visualization',
+                        paper_bgcolor: 'rgba(0,0,0,0)',
+                        plot_bgcolor: 'rgba(0,0,0,0)',
+                        font: { color: '#ffffff' },
+                        xaxis: { title: 'Skills' },
+                        yaxis: { title: 'Priority (Detection)', showticklabels: false }
+                    };
+
+                    Plotly.newPlot('skillsChart', data, layout);
+                } else {
+                    document.getElementById('skillsChart').innerHTML = '<p style="text-align:center; padding: 2rem;">No data for visualization.</p>';
+                }
+            </script>
+        </div>
+    </div>
+</body>
+</html>
